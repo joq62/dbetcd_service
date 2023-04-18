@@ -81,7 +81,7 @@ stop()-> gen_server:call(?SERVER, {stop},infinity).
 	  ignore.
 
 init([]) ->
-    DbEtcdNode=sd:get_node(dbetcd),
+    DbEtcdNode=sd:get_node(dbetcd_appl),
     lib_db:dynamic_db_init(DbEtcdNode),
     ?LOG_NOTICE("Server started ",[DbEtcdNode]),
     
