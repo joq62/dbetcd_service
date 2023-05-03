@@ -26,6 +26,7 @@ start()->
    
     ok=setup(),
     ok=lock_test:start(),
+    ok=deployment_test:start(),
     ok=host_test:start(node()),
     ok=provider_test:start(node()),
 %    ok=dist_test:start(),

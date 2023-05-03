@@ -39,6 +39,11 @@ start()->
     Ok_HostSpec=[X||{ok,X}<-HostSpecList],
     Err_HostSpec=[X||{error,X}<-HostSpecList],
 
+    ok=db_deployment_spec:create_table(),
+    DeploySpecList=db_deployment_spec:git_clone_load(),
+    Ok_DeploySpec=[X||{ok,X}<-DeploySpecList],
+    Err_DeploySpec=[X||{error,X}<-DeploySpecList],
+
     ok=db_lock:create_table(),
     
     Test=lists:append([Ok_ProviderSpec,Ok_HostSpec,
@@ -46,6 +51,7 @@ start()->
     Result=case Test of
 	       []->
 		   {error,[
+			   {deployment_spec,Ok_DeploySpec,Err_DeploySpec},
 			   {provider_spec, Ok_ProviderSpec,Err_ProviderSpec},
 			   {host_spec,Ok_HostSpec,Err_HostSpec}
 			  ]};
