@@ -45,6 +45,7 @@ start()->
     Err_DeploySpec=[X||{error,X}<-DeploySpecList],
 
     ok=db_lock:create_table(),
+    ok=db_deploy:create_table(),
     
     Test=lists:append([Ok_ProviderSpec,Ok_HostSpec,
 		       Err_ProviderSpec,Err_HostSpec]),
