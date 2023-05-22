@@ -14,7 +14,7 @@
 %% External exports
 
 -export([create_table/0,create_table/2,add_node/2]).
--export([create/5,delete/1]).
+-export([create/6,delete/1]).
 -export([read_all/0,read/1,read/2,get_all_id/0]).
 -export([do/1]).
 -export([member/1]).
@@ -57,12 +57,13 @@ add_node(Node,StorageType)->
 %% @end
 %%--------------------------------------------------------------------
 
-create(Id,ProviderId,Node,Dir,CreationTime)->
+create(Id,ProviderId,Node,Dir,HostName,CreationTime)->
     Record=#?RECORD{
 		    id=Id,
 		    provider_id=ProviderId,
 		    node=Node,
 		    dir=Dir,
+		    host_name=HostName,
 		    creation_time=CreationTime
 		   },
     F = fun() -> mnesia:write(Record) end,
@@ -115,6 +116,7 @@ read(Id)->
 	       _->
 		   [Info]=[{R#?RECORD.id,R#?RECORD.provider_id,
 			    R#?RECORD.node, R#?RECORD.dir, 
+			    R#?RECORD.host_name, 
 			    R#?RECORD.creation_time}||R<-Z],
 		   Info
 	   end,
@@ -136,6 +138,8 @@ read(Key,Id)->
 			   {ok,R#?RECORD.node};
 		       dir->
 			   {ok,R#?RECORD.dir};
+		       host_name->
+			   {ok,R#?RECORD.host_name};
 		       creation_time->
 			   {ok,R#?RECORD.creation_time};
 		       Err ->

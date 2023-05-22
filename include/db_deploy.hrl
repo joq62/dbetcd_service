@@ -7,5 +7,6 @@
 		 provider_id,
 		 node,
 		 dir,
+		 host_name,
 		 creation_time
 		}).
