@@ -4,9 +4,10 @@
 
 -record(?RECORD,{
 		 id,
-		 provider_id,
-		 node,
+		 provider_spec,
+		 node_name,
 		 dir,
-		 host_name,
+		 node,
+		 host_spec,
 		 creation_time
 		}).

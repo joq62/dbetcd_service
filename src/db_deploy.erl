@@ -14,7 +14,7 @@
 %% External exports
 
 -export([create_table/0,create_table/2,add_node/2]).
--export([create/6,delete/1]).
+-export([create/7,delete/1]).
 -export([read_all/0,read/1,read/2,get_all_id/0]).
 -export([do/1]).
 -export([member/1]).
@@ -57,13 +57,14 @@ add_node(Node,StorageType)->
 %% @end
 %%--------------------------------------------------------------------
 
-create(Id,ProviderId,Node,Dir,HostName,CreationTime)->
+create(Id,ProviderSpec,NodeName,Dir,Node,HostSpec,CreationTime)->
     Record=#?RECORD{
 		    id=Id,
-		    provider_id=ProviderId,
+		    provider_spec=ProviderSpec,
+		    node_name=NodeName,
 		    node=Node,
 		    dir=Dir,
-		    host_name=HostName,
+		    host_spec=HostSpec,
 		    creation_time=CreationTime
 		   },
     F = fun() -> mnesia:write(Record) end,
@@ -104,8 +105,8 @@ member(Id)->
 %%--------------------------------------------------------------------
 read_all() ->
     Z=do(qlc:q([X || X <- mnesia:table(?TABLE)])),
-    [{R#?RECORD.id,R#?RECORD.provider_id,
-     R#?RECORD.node, R#?RECORD.dir, R#?RECORD.creation_time}||R<-Z].
+    [{R#?RECORD.id,R#?RECORD.provider_spec,R#?RECORD.node_name,
+      R#?RECORD.dir,R#?RECORD.node, R#?RECORD.host_spec,R#?RECORD.creation_time}||R<-Z].
 
 read(Id)->
     Z=do(qlc:q([X || X <- mnesia:table(?TABLE),		
@@ -114,10 +115,8 @@ read(Id)->
 	       []->
 		  [];
 	       _->
-		   [Info]=[{R#?RECORD.id,R#?RECORD.provider_id,
-			    R#?RECORD.node, R#?RECORD.dir, 
-			    R#?RECORD.host_name, 
-			    R#?RECORD.creation_time}||R<-Z],
+		   [Info]=[{R#?RECORD.id,R#?RECORD.provider_spec,R#?RECORD.node_name,
+			    R#?RECORD.dir,R#?RECORD.node, R#?RECORD.host_spec,R#?RECORD.creation_time}||R<-Z],
 		   Info
 	   end,
     Result.
@@ -132,14 +131,16 @@ read(Key,Id)->
 		   case  Key of
 		       id->
 			   {ok,R#?RECORD.id};
-		       provider_id->
-			   {ok,R#?RECORD.provider_id};
-		       node->
-			   {ok,R#?RECORD.node};
+		       provider_spec->
+			   {ok,R#?RECORD.provider_spec};
+		       node_name->
+			   {ok,R#?RECORD.node_name};
 		       dir->
 			   {ok,R#?RECORD.dir};
-		       host_name->
-			   {ok,R#?RECORD.host_name};
+		       node->
+			   {ok,R#?RECORD.node};
+		       host_spec->
+			   {ok,R#?RECORD.host_spec};
 		       creation_time->
 			   {ok,R#?RECORD.creation_time};
 		       Err ->
